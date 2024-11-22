@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+   <table class = "table">
+        <thead>
+            <tr>
+                <th class = "text-start">Symbol</th>
+                <th class = "text-end">Shares</th>
+                <th class = "text-end">Price</th>
+                <th class = "text-end">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in info%}
+                            <tr>
+                                <td class = "text-start">{{stock.symbol}}</td>
+                                <td class = "text-end">{{stock.total_shares}}</td>
+                                <td class = "text-end">{{prices[stock.symbol] | usd}}</td>
+                                <td class = "text-end">{{(stock.total_shares * prices[stock.symbol]) | float | usd}}</td>
+                            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan = "3" class = "text-end">Cash</td>
+                <td class = "text-end">{{cash.user | usd}}</td>
+            </tr>
+            <tr>
+                <td colspan = "3" class = "text-end">TOTAL</td>
+                <td class = "text-end">{{(cash.user + cash.stocks) | float | usd}} </td>
+            </tr>
+        </tfoot>
+   </table>
+{% endblock %}
