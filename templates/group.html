@@ -26,7 +26,7 @@
         <!-- Add New Quote Form -->
         <div class="add-quote-form">
             <h2>Add a New Quote</h2>
-            <form action="{{ url_for('add_quote', group_id=group_id) }}" method="POST">
+            <form action="{{ url_for('add_quote', group_id=group.id) }}" method="POST">
                 <div class="form-group">
                     <label for="quote">Quote:</label>
                     <textarea id="quote" name="quote" required></textarea>

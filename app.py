@@ -50,7 +50,7 @@ def group_page(group_id):
     Route to render a page specific to a group based on group_id
     '''
     # Fetch details about the specific group
-    group_details = quote_db.execute("SELECT name FROM groups WHERE id = ?", group_id)[0]  # Assuming each group_id is unique and fetches one row
+    group_details = quote_db.execute("SELECT name,id FROM groups WHERE id = ?", group_id)[0]  # Assuming each group_id is unique and fetches one row
     quotes = quote_db.execute("SELECT quote_text, quote_author, location FROM quotes WHERE group_id = ?", group_id)
     # Render a group-specific template
     return render_template("group.html", group=group_details, quotes = quotes)
@@ -193,7 +193,7 @@ def create():
             return apology ("password and password confirmation do not match", 403)
         
         pass_hash = generate_password_hash(password)
-        group_rows = quote_db.execute("SELECT * FROM groups WHERE groupname = ?", groupname)
+        group_rows = quote_db.execute("SELECT * FROM groups WHERE name = ?", groupname)
         if len(group_rows) != 0:
             return apology("group name already taken", 403)
         
