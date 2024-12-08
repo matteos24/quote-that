@@ -23,7 +23,6 @@ Session(app)
 db = SQL("sqlite:///finance.db")
 quote_db = SQL("sqlite:///quote.db")
 
-
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
@@ -43,22 +42,6 @@ def index():
     
     return render_template("index.html", group_info = group_info, name = name)
    
-''' 
-    # I use my transaction database to determine how many stocks a person has, by summing. Positive means bough, negative means sell, so total sum means total
-    """Show portfolio of stocks"""
-    info = db.execute(
-        "SELECT symbol, SUM(shares) AS total_shares FROM transactions WHERE user_id = ? GROUP BY symbol HAVING SUM(shares) > 0", session["user_id"])
-    prices = {}
-    cash = {}
-    cash["user"] = float(db.execute("SELECT cash FROM users WHERE id = ?",
-                         session["user_id"])[0]["cash"])
-    cash["stocks"] = 0
-    for stock in info:  # Here I loop through all the stocks to determine how much money is tied up in stocks vs cash
-        prices[stock["symbol"]] = lookup(stock["symbol"])["price"]
-        cash["stocks"] += (prices[stock["symbol"]] * stock["total_shares"])
-    cash["stocks"] = float(cash["stocks"])
-    return render_template("index.html", info=info, cash=cash, prices=prices)
-'''
 
 @app.route("/group/<int:group_id>")
 @login_required
@@ -261,8 +244,7 @@ def history():
 def login():
     # Forget any user_id
     session.clear()
-    
-
+    print("In Login Page Now")
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         if not request.form.get("username"):
@@ -284,8 +266,7 @@ def login():
         session["user_id"] = user_rows[0]["id"]
 
         # Redirect user to home page
-        return redirect("/")
-    
+        return redirect("/")    
     else:
         return render_template("login.html")
     

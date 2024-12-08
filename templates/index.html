@@ -6,18 +6,19 @@
 
 {% block main %}
     <div class="container">
-        <h1>My Groups</h1>
+        <h1>Welcome, {{ name.user }}! </h1>
+        <h2>My Groups</h2>
         <div class="group-grid">
             <!-- Group cards -->
-            <!--make this a for loop-->
-            <div class="group-card">Group 1</div>
-            <div class="group-card">Group 2</div>
-            <div class="group-card">Group 3</div>
-              
-            <!-- Join New Group Button -->
-            <a href="add.html" class="group-card join-card">+ Join New Group</a>
-            </div>
-          </div>
-          <script src="script.js"></script>          
-{% endblock %}
+            {% for group in group_info %}
+                <div class="group-card">
+                    <a href="{{ url_for('group_page', group_id=group['id']) }}">{{ group.name }}</a>
+                </div>
+            {% endfor %}
 
+            <!-- Join New Group Button -->
+            <a href="{{ url_for('join') }}" class="group-card join-card">+ Join New Group</a>
+        </div>
+    </div>
+    <script src="script.js"></script>
+{% endblock %}

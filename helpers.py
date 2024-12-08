@@ -38,7 +38,10 @@ def login_required(f):
 
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        print("Login check for route:", f.__name__)
+        print(session.get("user_id"))
         if session.get("user_id") is None:
+            print("redirecting into login page")
             return redirect("/login")
         return f(*args, **kwargs)
 
