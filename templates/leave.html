@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Leave Group
+{% endblock %}
+
+{% block main %}
+    <form action="/leave" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="groupname" placeholder="Group Name" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Leave Group</button>
+    </form>
+{% endblock %}

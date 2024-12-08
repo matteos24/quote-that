@@ -14,76 +14,165 @@
     width: 100%;
 }
 
+.nav-link {
+  color: #37474f;
+}
+
 /* BODY */
 /* Background */
 body {
     background: #F5F5F5;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* HOMEPAGE */
 /* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  /* Container */
-  .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  /* Group Grid */
-  .group-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-  }
-  
-  /* Group Card */
-  .group-card {
-    background-color: #ffffff;
-    border: 2px solid #D7CCC8;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  /* Hover Effect */
-  .group-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Join New Group Card */
-  .join-card {
-    background-color: #E3F4F2;
-    color: #4db6ac;
-    border: 2px dashed #4db6ac;
-  }
-  
-  .join-card:hover {
-    background-color: #E3F4F2;
-  }
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  /* Create New Group Card */
-  .create-card {
-    background-color: #fdecec;
-    color: #e57373;
-    border: 2px dashed #e57373;
-  }
+h1 {
+  font-size: 49px;
+  color: #37474f;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+h2 {
+  font-size: 25px;
+  color: #37474f;
+  text-align: center;
+  margin-bottom: 20px;
+}
   
-  .create-card:hover {
-    background-color: #fdecec;
+/* Container */
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: center;
+}
+  
+/* Group Grid */
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+  
+/* Group Card */
+.group-card {
+  background-color: #ffffff;
+  border: 2px solid #D7CCC8;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+  
+/* Hover Effect */
+.group-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Create New Group Card */
+.create-card {
+  background-color: #fdecec;
+  color: #e57373;
+  border: 2px dashed #e57373;
+}
+  
+.create-card:hover {
+  background-color: #fdecec;
+}
+
+/* Join New Group Card */
+.join-card {
+  background-color: #E3F4F2;
+  color: #4db6ac;
+  border: 2px dashed #4db6ac;
+}
+  
+.join-card:hover {
+  background-color: #E3F4F2;
+}
+
+/* Leave Group Card */
+.leave-card {
+  background-color: #fdecec;
+  color: #e57373;
+  border: 2px dashed #e57373;
+}
+  
+.leave-card:hover {
+  background-color: #fdecec;
+}
+
+/* Form Inputs */
+.form-control {
+  border: 1px solid #b0bec5;
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 10px 12px;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #37474f;
+  box-shadow: 0 0 5px rgba(55, 71, 79, 0.7);
+  outline: none;
+}
+
+/* Form Labels */
+.form-label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #b0bec5;
+}
+
+/* Submit Button */
+.btn-primary {
+  background-color: #b0bec5;
+  border-color: #b0bec5;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: #37474f;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #37474f;
+  border-color: #37474f;
+  color: #b0bec5;
+  box-shadow: 0 4px 6px rgba(55, 71, 79, 0.7);
+
+}
+
+/* Center Alignment for Button */
+.text-center {
+  margin-top: 20px;
+}
+
+/* Adjust spacing between input fields */
+.mb-3 {
+  margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+      width: 90%;
+      padding: 20px;
   }
+}
