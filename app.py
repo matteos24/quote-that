@@ -160,6 +160,12 @@ def join():
         ):
             return apology("invalid group name and/or password", 403)
         
+        group_info = quote_db.execute("SELECT name,id FROM groups WHERE id IN (SELECT group_id FROM additions WHERE user_id = ? GROUP BY group_id HAVING SUM(value) > 0) AND name = ?", session["user_id"], request.form.get("groupname"))
+
+        if (len(group_info)) != 0:
+            return apology("you have already joined this group, you can't join it again")
+
+
         quote_db.execute("INSERT INTO additions (user_id, group_id, value) VALUES (?,?,?)", session["user_id"], group_rows[0]["id"], 1) #1 indicates joining the group
 
         # Redirect user to home page
@@ -221,7 +227,12 @@ def leave():
         group_rows = quote_db.execute("SELECT * FROM groups WHERE name = ?", groupname)
         if len(group_rows) != 1:
             return apology("invalid group name selected, somehow?", 403)
-        
+
+        group_info = quote_db.execute("SELECT name,id FROM groups WHERE id IN (SELECT group_id FROM additions WHERE user_id = ? GROUP BY group_id HAVING SUM(value) > 0) AND name = ?", session["user_id"], request.form.get("groupname"))
+
+        if (len(group_info)) == 0:
+            return apology("you are already not in this group, so you can't leave it")
+
         quote_db.execute("INSERT INTO additions (user_id, group_id, value) VALUES (?,?,?)", session["user_id"], group_rows[0]["id"], -1) #-1 indicates leaving the group
 
         # Redirect user to home page
