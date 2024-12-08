@@ -200,7 +200,7 @@ def create():
         quote_db.execute("INSERT INTO groups (name, group_hash) VALUES (?,?)", groupname, pass_hash)
 
     else:
-        render_template("create.html")
+        return render_template("create.html")
 
 
 
