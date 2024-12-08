@@ -15,13 +15,15 @@
                     <a href="{{ url_for('group_page', group_id=group['id']) }}">{{ group.name }}</a>
                 </div>
             {% endfor %}
-
-            <!-- Join New Group Button -->
-            <a href="{{ url_for('join') }}" class="group-card join-card">+ Join New Group</a>
             
             <!-- Create New Group Button -->
             <a href="{{ url_for('create') }}" class="group-card create-card">+ Create New Group</a>
+
+            <!-- Join New Group Button -->
+            <a href="{{ url_for('join') }}" class="group-card join-card">+ Join New Group</a>
+
+            <!-- Leave New Group Button -->
+            <a href="{{ url_for('leave') }}" class="group-card leave-card">- Leave Group</a>
         </div>
     </div>
-    <script src="script.js"></script>
 {% endblock %}
