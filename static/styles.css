@@ -76,3 +76,14 @@ body {
   .join-card:hover {
     background-color: #E3F4F2;
   }
+
+  /* Create New Group Card */
+  .create-card {
+    background-color: #fdecec;
+    color: #e57373;
+    border: 2px dashed #e57373;
+  }
+  
+  .create-card:hover {
+    background-color: #fdecec;
+  }
