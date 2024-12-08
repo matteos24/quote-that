@@ -1,10 +1,12 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Log In
+    Welcome
 {% endblock %}
 
 {% block main %}
+    <h1>Welcome to Quote That!</h1>
+    <p>Connect with your friends by posting, sharing, and saving quotes that matter. A place to preserve memories, humor, and inspiration.</p>
     <form action="/login" method="post">
         <div class="mb-3">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
@@ -14,4 +16,5 @@
         </div>
         <button class="btn btn-primary" type="submit">Log In</button>
     </form>
+    <p><a href="/register">Don't have an account yet?</a></li>
 {% endblock %}
