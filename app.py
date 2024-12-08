@@ -36,17 +36,14 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    '''
-    IMPLEMENT ONCE HTML IS DONE
-    
     group_info = quote_db.execute("SELECT name,id FROM groups WHERE id IN (SELECT group_id FROM additions WHERE user_id = ? GROUP BY group_id HAVING SUM(value) > 0)", session["user_id"])
     
     name = {}
     name["user"] = quote_db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]
     
     return render_template("index.html", group_info = group_info, name = name)
-    '''
-    
+   
+''' 
     # I use my transaction database to determine how many stocks a person has, by summing. Positive means bough, negative means sell, so total sum means total
     """Show portfolio of stocks"""
     info = db.execute(
@@ -61,7 +58,7 @@ def index():
         cash["stocks"] += (prices[stock["symbol"]] * stock["total_shares"])
     cash["stocks"] = float(cash["stocks"])
     return render_template("index.html", info=info, cash=cash, prices=prices)
-
+'''
 
 @app.route("/group/<int:group_id>")
 @login_required
@@ -101,6 +98,7 @@ def add_quote(group_id):
     # Redirect back to the group page
     return redirect(url_for("group_page", group_id=group_id))
 
+'''
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
 def buy():
@@ -159,9 +157,9 @@ def request_cash():
 
     # Redirect to the homepage or another page
     return redirect("/")
-
 '''
-IMPLEMENT WHEN HTML GETS IMPLEMENTED
+
+
 
 @app.route("/join", methods = ["GET","POST"])
 @login_required
@@ -186,10 +184,8 @@ def join():
     else:
         return render_template("join.html")
 
-''' 
 
-'''
-IMPLEMENT WHEN HTML IS DONE
+
 
 @app.route("/create", methods = ["GET", "POST"])
 @login_required
@@ -223,10 +219,10 @@ def create():
     else:
         render_template("create.html")
 
-'''
 
-'''
-INSERT WHEN HTML IS COMPLETED
+
+
+
 
 @app.route("/leave", methods = ["GET", "POST"])
 @login_required
@@ -248,6 +244,7 @@ def leave():
     else:
         return render_template("leave.html")
 
+
 '''
 @app.route("/history")
 @login_required
@@ -258,13 +255,14 @@ def history():
     transactions = db.execute("SELECT * FROM transactions WHERE user_id = ?", session["user_id"])
     return render_template("history.html", transactions=transactions)
 
+'''
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     # Forget any user_id
     session.clear()
-    '''
-    IMPLEMENT COMMENTED CODE WHEN HTML GETS ONLINE
+    
+
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         if not request.form.get("username"):
@@ -283,15 +281,15 @@ def login():
             return apology("invalid username and/or password", 403)
         
         # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = user_rows[0]["id"]
 
         # Redirect user to home page
         return redirect("/")
     
     else:
         return render_template("login.html")
+    
     '''
-
     if request.method == "POST":
         # Ensure username was submitted
         if not request.form.get("username"):
@@ -321,7 +319,7 @@ def login():
         # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
-
+    '''
 
 @app.route("/logout")
 def logout():
@@ -334,6 +332,7 @@ def logout():
     return redirect("/")
 
 
+'''
 @app.route("/quote", methods=["GET", "POST"])
 @login_required
 def quote():
@@ -348,13 +347,10 @@ def quote():
             return render_template("quoted.html", info=lookup(symbol))
     return render_template("quote.html")
 
+'''
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    '''
-    IMPLEMENT WHEN HTML Happens
-    
-
     """Register user"""
     if request.method == "POST":
         username = request.form.get("username")
@@ -411,7 +407,10 @@ def register():
         return redirect("/")
 
     return render_template("register.html")
+    '''
 
+
+'''
 
 @app.route("/sell", methods=["GET", "POST"])
 @login_required
@@ -464,3 +463,4 @@ def sell():
         "SELECT symbol, SUM(shares) AS total_shares FROM transactions WHERE user_id = ? GROUP BY symbol HAVING SUM(shares) > 0", session["user_id"])
     # I use jinja to make dynamic webpages, here I pass in info for the dynamic sell page (changes the values in the dropdown menu)
     return render_template("sell.html", info=info)
+'''
