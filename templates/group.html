@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ group['name'] }} - Group Page
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <h1>{{ group['name'] }}</h1>
+        <div class="quote-grid">
+            <!-- Quote cards -->
+            {% if quotes %}
+                {% for quote in quotes %}
+                    <div class="quote-card">
+                        <blockquote>
+                            <p>"{{ quote['quote_text'] }}"</p>
+                            <footer>- {{ quote['quote_author'] }}{% if quote['location'] %}, {{ quote['location'] }}{% endif %}</footer>
+                        </blockquote>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No quotes in this group yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Add New Quote Form -->
+        <div class="add-quote-form">
+            <h2>Add a New Quote</h2>
+            <form action="{{ url_for('add_quote', group_id=group_id) }}" method="POST">
+                <div class="form-group">
+                    <label for="quote">Quote:</label>
+                    <textarea id="quote" name="quote" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="author">Author:</label>
+                    <input type="text" id="author" name="author" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Quote</button>
+            </form>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Groups</a>
+    </div>
+{% endblock %}
