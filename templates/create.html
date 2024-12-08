@@ -7,8 +7,16 @@
 {% block main %}
     <form action="/create" method="post">
         <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="symbol" placeholder="Symbol" type="text">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="groupname" placeholder="Group Name" type="text">
         </div>
-        <button class="btn btn-primary" type="submit">Quote</button>
+        <div class = "mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="password" placeholder="Group Password" type="text">
+        </div>
+        <div class = "mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="pass_confirmation" placeholder="Password Confirmation" type="text">
+        </div>
+
+
+        <button class="btn btn-primary" type="submit">Create!</button>
     </form>
 {% endblock %}
