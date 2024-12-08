@@ -199,6 +199,8 @@ def create():
         
         quote_db.execute("INSERT INTO groups (name, group_hash) VALUES (?,?)", groupname, pass_hash)
 
+        return redirect("/")
+
     else:
         return render_template("create.html")
 
@@ -357,7 +359,7 @@ def register():
         except:
             return apology("username already exists", 400)
         return redirect("/")
-
+    
     return render_template("register.html")
     '''
 
