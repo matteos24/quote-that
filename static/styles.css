@@ -19,13 +19,6 @@
   color: #37474f;
 }
 
-/* BODY */
-/* Background */
-body {
-    background: #F5F5F5;
-    font-family: 'Poppins', sans-serif;
-}
-
 /* HOMEPAGE */
 /* General Styles */
 body {
@@ -35,6 +28,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: #37474f;
+  background: #F5F5F5;
+  font-family: 'Poppins', sans-serif;
 }
 
 h1 {
@@ -42,13 +38,18 @@ h1 {
   color: #37474f;
   text-align: center;
   font-family: 'Poppins', sans-serif;
+  
 }
 
 h2 {
   font-size: 25px;
-  color: #37474f;
+  color: #B0BEC5;
   text-align: center;
   margin-bottom: 20px;
+}
+
+p {
+  color: #90A4AE;
 }
   
 /* Container */
@@ -58,7 +59,7 @@ h2 {
   padding: 20px;
   text-align: center;
 }
-  
+
 /* Group Grid */
 .group-grid {
   display: grid;
@@ -67,70 +68,93 @@ h2 {
   margin-top: 20px;
 }
   
-/* Group Card */
+/* Group Cards */
+.group-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
 .group-card {
-  background-color: #ffffff;
-  border: 2px solid #D7CCC8;
+  background-color: #F5F5F5;
+  border: 2px solid #B0BEC5;
+  color: #B0BEC5;
   border-radius: 10px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   padding: 20px;
   text-align: center;
+  display: flex;
   font-weight: bold;
+  flex-direction: column;
   cursor: pointer;
+  justify-content: center;
+  align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
 }
   
 /* Hover Effect */
 .group-card:hover {
+  color: #37474f;
+  border: 2px solid #37474f;
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Create New Group Card */
 .create-card {
-  background-color: #fdecec;
-  color: #e57373;
-  border: 2px dashed #e57373;
+  background-color: #E3F2FD;
+  color: #64B5F6;
+  border: 2px dashed #64B5F6;
 }
   
 .create-card:hover {
-  background-color: #fdecec;
+  color: #1E88E5;
+  border: 2px dashed #1E88E5;
+  background-color: #E3F2FD;
 }
 
 /* Join New Group Card */
 .join-card {
-  background-color: #E3F4F2;
+  background-color: #E0F2F1;
   color: #4db6ac;
   border: 2px dashed #4db6ac;
 }
   
 .join-card:hover {
-  background-color: #E3F4F2;
+  color: #3A9182;
+  border: 2px dashed #3A9182;
+  background-color: #E0F2F1;
 }
 
 /* Leave Group Card */
 .leave-card {
-  background-color: #fdecec;
+  background-color: #FDECEA;
   color: #e57373;
   border: 2px dashed #e57373;
 }
   
 .leave-card:hover {
-  background-color: #fdecec;
+  background-color: #FDECEA;
+  border: 2px dashed #C44141;
+  color: #C44141;
 }
 
 /* Form Inputs */
 .form-control {
-  border: 1px solid #b0bec5;
+  background-color: #EDEDED;
+  border: 1px solid #D3D3D3;
+  color: #37474F;
   border-radius: 5px;
   font-size: 16px;
   padding: 10px 12px;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-control:focus {
-  border-color: #37474f;
-  box-shadow: 0 0 5px rgba(55, 71, 79, 0.7);
+  border-color: #4DB6AC;
+  box-shadow: 0 0 5px rgba(77, 182, 172, 0.5);
   outline: none;
 }
 
@@ -143,21 +167,44 @@ h2 {
 
 /* Submit Button */
 .btn-primary {
-  background-color: #b0bec5;
-  border-color: #b0bec5;
+  background-color: #4DB6AC;
+  border-color: #4DB6AC;
+  color: #fff;
   font-size: 16px;
   padding: 10px 20px;
   border-radius: 5px;
-  color: #37474f;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .btn-primary:hover {
-  background-color: #37474f;
-  border-color: #37474f;
-  color: #b0bec5;
+  background-color: #3D8F86;
+  border-color: #3D8F86;
   box-shadow: 0 4px 6px rgba(55, 71, 79, 0.7);
+}
 
+/* Active State */
+.btn-primary:active {
+  background-color: #3D8F86;
+  border-color: #3D8F86;
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Focus State */
+.btn-primary:focus {
+  background-color: #4DB6AC;
+  border-color: #4DB6AC;
+  box-shadow: 0 0 5px rgba(77, 182, 172, 0.5);
+  outline: none;
+}
+
+a {
+  color: #F2B4B4;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #E57373;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Center Alignment for Button */
@@ -176,4 +223,32 @@ h2 {
       width: 90%;
       padding: 20px;
   }
+}
+
+/* LIKING */
+.like-button {
+  background-color: #F5F5F5;
+  color: #F2B4B4;
+}
+
+.liked {
+  background-color: #F5F5F5;
+  color: #E57373;
+}
+
+.quote-details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.like-form {
+  display: inline-flex;
+  align-items: center;
+}
+
+.like-count {
+  margin-left: 5px;
+  font-weight: bold;
 }
