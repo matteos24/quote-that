@@ -11,9 +11,7 @@
         <div class="group-grid">
             <!-- Group Cards -->
             {% for group in group_info %}
-                <div class="group-card">
-                    <a href="{{ url_for('group_page', group_id=group['id']) }}">{{ group.name }}</a>
-                </div>
+                <a href="{{ url_for('group_page', group_id=group['id']) }}" class="group-card">{{ group.name }}</a>
             {% endfor %}
             
             <!-- Create New Group Button -->
