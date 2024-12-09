@@ -225,15 +225,25 @@ a:hover {
   }
 }
 
-/* LIKING */
-.like-button {
-  background-color: #F5F5F5;
-  color: #F2B4B4;
+/* QUOTES */
+.quote-container .quote {
+  font-style: italic;
+  font-size: 1.2rem;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px 0;
 }
 
-.liked {
-  background-color: #F5F5F5;
-  color: #E57373;
+.quote-text {
+  color: #90A4AE;
+}
+
+.quote-container:nth-child(odd) {
+  background-color: #EDE7E3;
+}
+
+.quote-container:nth-child(even) {
+  background-color: #F5F2F0;
 }
 
 .quote-details {
@@ -241,14 +251,55 @@ a:hover {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: right;
+  text-align: right;
+  font-size: 1rem;
+  color: #B0BEC5;
+  margin-top: 10px;
+}
+
+/* LIKING */
+.like-button {
+  background-color: #FDECEA;
+  color: #e57373;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.like-button:hover {
+  background-color: #e57373;
+  color: #FDECEA;
+}
+
+.liked {
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: #C44141;
+  color: #FDECEA;
+}
+
+.liked:hover {
+  background-color: #e57373;
+  color: #FDECEA;
 }
 
 .like-form {
   display: inline-flex;
   align-items: center;
+  gap: 5px;
 }
 
 .like-count {
-  margin-left: 5px;
   font-weight: bold;
+  font-style: normal;
+  margin-left: 5px;
+  color: #e57373;
 }

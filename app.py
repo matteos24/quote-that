@@ -1,3 +1,4 @@
+# Import libraries
 import os
 import re
 
@@ -11,18 +12,15 @@ from helpers import apology, login_required, lookup, usd
 # Configure application
 app = Flask(__name__)
 
-# Custom filter
-app.jinja_env.filters["usd"] = usd
-
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+# Initialize SQLite database
 quote_db = SQL("sqlite:///quote.db")
 
+# Ensure responses not cached
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
@@ -32,17 +30,22 @@ def after_request(response):
     return response
 
 
+# Homepage
 @app.route("/")
 @login_required
 def index():
+    # Find groups the user is in
     group_info = quote_db.execute("SELECT name,id FROM groups WHERE id IN (SELECT group_id FROM additions WHERE user_id = ? GROUP BY group_id HAVING SUM(value) > 0)", session["user_id"])
     
+    # Find the username of the user
     name = {}
     name["user"] = quote_db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]
     
+    # Index page
     return render_template("index.html", group_info = group_info, name = name)
    
 
+# Group page
 @app.route("/group/<int:group_id>")
 @login_required
 def group_page(group_id):
@@ -58,6 +61,8 @@ def group_page(group_id):
     # Render a group-specific template
     return render_template("group.html", group=group_details, quotes = quotes, like_info = like_info)
 
+
+# Add quote
 @app.route("/group/<int:group_id>/add_quote", methods=["POST"])
 @login_required
 def add_quote(group_id):
@@ -69,6 +74,7 @@ def add_quote(group_id):
     quote_author = request.form.get("author")
     quote_location = request.form.get("location")
 
+    # Validate input
     if not quote_content:
         return apology("please provide text for your new quote", 403)
     elif not quote_author:
@@ -85,11 +91,14 @@ def add_quote(group_id):
     return redirect(url_for("group_page", group_id=group_id))
 
 
+# Like quote
 @app.route("/group/<int:group_id>/like_quote/<int:quote_id>", methods=["POST"])
 @login_required
 def like_quote(group_id, quote_id):
+    # Check if user has liked quote
     user_like = quote_db.execute("SELECT quote_id FROM likes WHERE user_id = ? GROUP BY quote_id HAVING SUM(like_value) > 0 AND quote_id = ?", session["user_id"], quote_id)
 
+    # If not liked, like; else, unlike
     if (len(user_like)) == 0:
         quote_db.execute("INSERT INTO likes (user_id, quote_id, like_value) VALUES (?,?,?)", session["user_id"], quote_id, 1)
         quote_db.execute("UPDATE quotes SET likes = likes + 1 WHERE id = ?", quote_id)
@@ -100,29 +109,31 @@ def like_quote(group_id, quote_id):
     return redirect(url_for("group_page", group_id=group_id))
 
 
-
+# Join group
 @app.route("/join", methods = ["GET","POST"])
 @login_required
 def join():
     if request.method == "POST":
+        # Validate input
         if not request.form.get("groupname"):
             return apology("please provide a group name you want to join", 403)
-        
         elif not request.form.get("password"):
             return apology("please provide a password for the group you want to join", 403)
         
+        # Check if group exists & password is correct
         group_rows = quote_db.execute("SELECT * FROM groups WHERE name = ?", request.form.get("groupname"))
         if len(group_rows) != 1 or not check_password_hash(
             group_rows[0]["group_hash"], request.form.get("password")
         ):
             return apology("invalid group name and/or password", 403)
         
+        # Check if user is already in the group
         group_info = quote_db.execute("SELECT name,id FROM groups WHERE id IN (SELECT group_id FROM additions WHERE user_id = ? GROUP BY group_id HAVING SUM(value) > 0) AND name = ?", session["user_id"], request.form.get("groupname"))
 
         if (len(group_info)) != 0:
             return apology("you have already joined this group, you can't join it again")
 
-
+        # Add user to group
         quote_db.execute("INSERT INTO additions (user_id, group_id, value) VALUES (?,?,?)", session["user_id"], group_rows[0]["id"], 1) #1 indicates joining the group
 
         # Redirect user to home page
@@ -131,15 +142,17 @@ def join():
         return render_template("join.html")
 
 
-
-
+# Create group
 @app.route("/create", methods = ["GET", "POST"])
 @login_required
 def create():
     if request.method == "POST":
+        # Get form data
         groupname = request.form.get("groupname")
         password = request.form.get("password")
         confirmation = request.form.get("pass_confirmation")
+
+        # Validate input
         if not groupname:
             return apology ("please submit a name for your group", 403)
         
@@ -155,68 +168,68 @@ def create():
         elif (confirmation != password):
             return apology ("password and password confirmation do not match", 403)
         
+        # Hash password
         pass_hash = generate_password_hash(password)
+        
+        # Check if group name is taken
         group_rows = quote_db.execute("SELECT * FROM groups WHERE name = ?", groupname)
         if len(group_rows) != 0:
             return apology("group name already taken", 403)
         
+        # Insert new group into database
         quote_db.execute("INSERT INTO groups (name, group_hash) VALUES (?,?)", groupname, pass_hash)
 
+        # Redirect to homepage
         return redirect("/")
 
     else:
+        # Render group creation page
         return render_template("create.html")
 
 
-
-
-
-
+# Leave group
 @app.route("/leave", methods = ["GET", "POST"])
 @login_required
 def leave():
     if request.method == "POST":
+        # Get form data
         groupname = request.form.get("groupname")
 
+        # Validate input
         if not groupname:
             return apology("please select a group name you want to leave", 403)
-         
+        
+        # Check if group exists
         group_rows = quote_db.execute("SELECT * FROM groups WHERE name = ?", groupname)
         if len(group_rows) != 1:
             return apology("invalid group name selected, somehow?", 403)
 
+        # Check if user in group
         group_info = quote_db.execute("SELECT name,id FROM groups WHERE id IN (SELECT group_id FROM additions WHERE user_id = ? GROUP BY group_id HAVING SUM(value) > 0) AND name = ?", session["user_id"], request.form.get("groupname"))
 
         if (len(group_info)) == 0:
             return apology("you are already not in this group, so you can't leave it")
 
+        # Update database to reflect user leaving group
         quote_db.execute("INSERT INTO additions (user_id, group_id, value) VALUES (?,?,?)", session["user_id"], group_rows[0]["id"], -1) #-1 indicates leaving the group
 
         # Redirect user to home page
         return redirect("/")
     else:
+        # Render leave group page
         return render_template("leave.html")
 
 
-'''
-@app.route("/history")
-@login_required
-def history():
-    """Show history of transactions"""
-
-    # Very simple as I configured my transactions database for this history task
-    transactions = db.execute("SELECT * FROM transactions WHERE user_id = ?", session["user_id"])
-    return render_template("history.html", transactions=transactions)
-
-'''
-
+# Login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     # Forget any user_id
     session.clear()
     print("In Login Page Now")
+
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
+        # Validate input
         if not request.form.get("username"):
             return apology("must provide username", 403)
         
@@ -238,40 +251,11 @@ def login():
         # Redirect user to home page
         return redirect("/")    
     else:
+        # Render login page
         return render_template("login.html")
     
-    '''
-    if request.method == "POST":
-        # Ensure username was submitted
-        if not request.form.get("username"):
-            return apology("must provide username", 403)
 
-        # Ensure password was submitted
-        elif not request.form.get("password"):
-            return apology("must provide password", 403)
-
-        # Query database for username
-        rows = db.execute(
-            "SELECT * FROM users WHERE username = ?", request.form.get("username")
-        )
-
-        # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(
-            rows[0]["hash"], request.form.get("password")
-        ):
-            return apology("invalid username and/or password", 403)
-
-        # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
-
-        # Redirect user to home page
-        return redirect("/")
-
-        # User reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template("login.html")
-    '''
-
+# Logout
 @app.route("/logout")
 def logout():
     """Log user out"""
@@ -283,29 +267,15 @@ def logout():
     return redirect("/")
 
 
-'''
-@app.route("/quote", methods=["GET", "POST"])
-@login_required
-def quote():
-    """Get stock quote."""
-    if request.method == "POST":
-        symbol = request.form.get("symbol")
-        if not symbol:
-            return apology("missing symbol", 400)
-        if not lookup(symbol):
-            return apology("symbol does not exist", 400)
-        else:
-            return render_template("quoted.html", info=lookup(symbol))
-    return render_template("quote.html")
-
-'''
-
+# Register
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
     if request.method == "POST":
+        # Get form data
         username = request.form.get("username")
         password = request.form.get("password")
+        
         # Ensure username was submitted
         if not username:
             return apology("must provide username", 400)
@@ -320,98 +290,17 @@ def register():
         elif password != request.form.get("confirmation"):
             return apology("password and password confirm must match", 400)
 
+        # Hash password
         password_hash = generate_password_hash(password)
 
+        # Insert new user into database
         try:
             quote_db.execute("INSERT INTO users (username, pass_hash) VALUES(?, ?)", username, password_hash)
         except:
+            # Return apology if username taken
             return apology("username already exists", 400)
+        # Redirect to homepage
         return redirect("/")
     
+    # Render registration
     return render_template("register.html")
-    '''
-
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        # Ensure username was submitted
-        if not username:
-            return apology("must provide username", 400)
-
-        # Ensure password was submitted
-        elif not password:
-            return apology("must provide password", 400)
-
-        elif not request.form.get("confirmation"):
-            return apology("must confirm password", 400)
-
-        elif password != request.form.get("confirmation"):
-            return apology("password and password confirm must match", 400)
-
-        password_hash = generate_password_hash(password)
-
-        try:
-            db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, password_hash)
-        except:
-            return apology("username already exists", 400)
-        return redirect("/")
-
-    return render_template("register.html")
-    '''
-
-
-'''
-
-@app.route("/sell", methods=["GET", "POST"])
-@login_required
-def sell():
-    """Sell shares of stock"""
-    if request.method == 'POST':
-        symbol = request.form.get("symbol")
-        shares = request.form.get("shares")
-        try:
-            shares = float(shares)
-        except ValueError:
-            return apology("number of shares must be numeric", 400)
-
-        if not symbol:
-            return apology("must select stock to sell", 400)
-        if not shares:
-            return apology("you must select a number of shares to sell", 400)
-        if not shares.is_integer():
-            return apology("you must select a whole number of shares to sell", 400)
-        if shares <= 0:
-            return apology("you must select a number of shares to sell", 400)
-
-        info = db.execute(
-            "SELECT symbol, SUM(shares) AS total_shares FROM transactions WHERE user_id = ? GROUP BY symbol HAVING SUM(shares) > 0", session["user_id"])
-        contains = False
-        num_shares = 0
-        for stock in info:
-            if symbol == stock["symbol"]:
-                contains = True
-                num_shares = stock["total_shares"]
-
-        if (not contains):
-            return apology("you do not have that stock in your possesion", 400)
-        if (num_shares == 0):
-            return apology("by some miracle, you are trying to sell a stock you have 0 shares of", 400)
-        if (num_shares < int(shares)):
-            return apology("you do not have that many shares in your possession", 400)
-
-        user_cash = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0]["cash"]
-        sell_price = (lookup(symbol)["price"] * int(shares))
-
-        db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES(?, ?, ?, ?)",
-                   # Selling is just like reverse buying in my code.
-                   session["user_id"], symbol, (int(shares)) * -1, lookup(symbol)["price"])
-        db.execute("UPDATE users SET cash = ? WHERE id = ?",
-                   user_cash + sell_price, session["user_id"])
-        return redirect("/")
-
-    info = db.execute(
-        "SELECT symbol, SUM(shares) AS total_shares FROM transactions WHERE user_id = ? GROUP BY symbol HAVING SUM(shares) > 0", session["user_id"])
-    # I use jinja to make dynamic webpages, here I pass in info for the dynamic sell page (changes the values in the dropdown menu)
-    return render_template("sell.html", info=info)
-'''

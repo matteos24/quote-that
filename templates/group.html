@@ -11,13 +11,13 @@
             <!-- Quote cards -->
             {% if quotes %}
                 {% for quote in quotes %}
-                    <div class="quote-card">
-                        <blockquote>
-                            <p>"{{ quote['quote_text'] }}"</p>
+                    <div class="quote-container">
+                        <blockquote class="quote">
+                            <p class="quote-text">"{{ quote['quote_text'] }}"</p>
                             <div class="quote-details">
-                                <span>- {{ quote['quote_author'] }}</span>
-                                {% if quote['location'] %}
-                                <span>, {{ quote['location'] }}</span>
+                                <span>
+                                    - {{ quote['quote_author'] }}{% if quote['location'] %}, {{ quote['location'] }}
+                                </span>
                                 {% endif %}
                                 <form action="{{ url_for('like_quote', group_id=group['id'], quote_id=quote['id']) }}" method="POST" class="like-form">
                                     <button type="submit" class="{% if quote['id'] in like_info|map(attribute='id') %}liked{% else %}like-button{% endif %}">
@@ -36,39 +36,22 @@
             {% endif %}
         </div>
 
-        <style>
-            .like-button {
-                background-color: #f0f0f0;
-                color: #000;
-            }
-        
-            .liked {
-                background-color: #4caf50; /* Green background */
-                color: white; /* White text */
-            }
-        </style>
-
         <!-- Add New Quote Form -->
         <div class="add-quote-form">
             <h2>Add a New Quote</h2>
             <form action="{{ url_for('add_quote', group_id=group.id) }}" method="POST">
                 <div class="mb-3">
-                    <label for="quote">Quote:</label>
-                    <textarea id="quote" name="quote" required></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="author">Author:</label>
-                    <input type="text" id="author" name="author" required>
-                </div>
-                <div class="mb-3">
-                    <label for="location">Location:</label>
-                    <input type="text" id="location" name="location">
-                </div>
+                    <textarea id="quote" name="quote" placeholder="Enter Quote" class="form-control mx-auto w-auto" required autocomplete="off"></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <input type="text" id="author" name="author" placeholder="Enter Author" class="form-control mx-auto w-auto" required autocomplete="off">
+                  </div>
+                  <div class="mb-3">
+                    <input type="text" id="location" name="location" placeholder="Enter Location (Optional)" class="form-control mx-auto w-auto" autocomplete="off">
+                  </div>
                 <div>
                     <button type="submit" class="btn btn-primary">Add Quote</button>
-                </div>
-                <div>
-                    <a href="{{ url_for('index') }}" class="btn btn-primary">Back to Groups</a>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">Back</a>
                 </div>
             </form>
         </div>
