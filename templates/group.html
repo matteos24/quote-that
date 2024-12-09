@@ -14,14 +14,39 @@
                     <div class="quote-card">
                         <blockquote>
                             <p>"{{ quote['quote_text'] }}"</p>
-                            <footer>- {{ quote['quote_author'] }}{% if quote['location'] %}, {{ quote['location'] }}{% endif %}</footer>
-                        </blockquote>
+                            <div class="quote-details">
+                                <span>- {{ quote['quote_author'] }}</span>
+                                {% if quote['location'] %}
+                                <span>, {{ quote['location'] }}</span>
+                                {% endif %}
+                                <form action="{{ url_for('like_quote', group_id=group['id'], quote_id=quote['id']) }}" method="POST" class="like-form">
+                                    <button type="submit" class="{% if quote['id'] in like_info|map(attribute='id') %}liked{% else %}like-button{% endif %}">
+                                        {% if quote['id'] in like_info|map(attribute='id') %}Liked{% else %}Like{% endif %}
+                                    </button>
+                                    <span class="like-count">
+                                        {{ quote['likes'] or 0 }}
+                                    </span>
+                                </form>
+                            </div>
+                        </blockquote>                        
                     </div>
                 {% endfor %}
             {% else %}
                 <p>No quotes in this group yet.</p>
             {% endif %}
         </div>
+
+        <style>
+            .like-button {
+                background-color: #f0f0f0;
+                color: #000;
+            }
+        
+            .liked {
+                background-color: #4caf50; /* Green background */
+                color: white; /* White text */
+            }
+        </style>
 
         <!-- Add New Quote Form -->
         <div class="add-quote-form">
@@ -49,3 +74,4 @@
         </div>
     </div>
 {% endblock %}
+

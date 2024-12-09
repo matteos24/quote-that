@@ -51,9 +51,12 @@ def group_page(group_id):
     '''
     # Fetch details about the specific group
     group_details = quote_db.execute("SELECT name,id FROM groups WHERE id = ?", group_id)[0]  # Assuming each group_id is unique and fetches one row
-    quotes = quote_db.execute("SELECT quote_text, quote_author, location FROM quotes WHERE group_id = ?", group_id)
+    quotes = quote_db.execute("SELECT id, quote_text, quote_author, location, likes FROM quotes WHERE group_id = ?", group_id)
+    like_info = quote_db.execute("SELECT id FROM quotes WHERE id IN (SELECT quote_id FROM likes WHERE user_id = ? GROUP BY quote_id HAVING SUM(like_value) > 0)", session["user_id"])
+
+    
     # Render a group-specific template
-    return render_template("group.html", group=group_details, quotes = quotes)
+    return render_template("group.html", group=group_details, quotes = quotes, like_info = like_info)
 
 @app.route("/group/<int:group_id>/add_quote", methods=["POST"])
 @login_required
@@ -81,66 +84,20 @@ def add_quote(group_id):
     # Redirect back to the group page
     return redirect(url_for("group_page", group_id=group_id))
 
-'''
-@app.route("/buy", methods=["GET", "POST"])
+
+@app.route("/group/<int:group_id>/like_quote/<int:quote_id>", methods=["POST"])
 @login_required
-def buy():
-    if request.method == "POST":
-        symbol = request.form.get("symbol")
-        shares = request.form.get("shares")
+def like_quote(group_id, quote_id):
+    user_like = quote_db.execute("SELECT quote_id FROM likes WHERE user_id = ? GROUP BY quote_id HAVING SUM(like_value) > 0 AND quote_id = ?", session["user_id"], quote_id)
 
-        try:
-            shares = float(shares)
-        except ValueError:
-            return apology("number of shares must be numeric", 400)
-
-        if not symbol:
-            return apology("must provide symbol", 400)
-        if not lookup(symbol):
-            return apology("symbold does not exist", 400)
-        if not shares.is_integer():
-            return apology("number of shares must be a whole number", 400)
-        if shares <= 0:
-            return apology("number of shares are not valid", 400)
-
-        user_cash = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0]["cash"]
-        buy_price = (lookup(symbol)["price"] * int(shares))
-
-        if (buy_price > user_cash):
-            return apology("Insufficient funds", 400)
-
-        db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES(?, ?, ?, ?)",
-                   session["user_id"], symbol, shares, lookup(symbol)["price"])
-        db.execute("UPDATE users SET cash = ? WHERE id = ?",
-                   # I use user_id to differentiate between different people's accounts
-                   user_cash - buy_price, session["user_id"])
-        return redirect("/")
-
-    return render_template("buy.html")
-
-
-@app.route("/request_cash", methods=["POST"])
-@login_required
-def request_cash():
-    """Handle requesting more cash."""
-    # Get the amount of cash requested from the form
-    amount = request.form.get("amount")
-
-    # Validate the amount
-    if not amount or not amount.isdigit():
-        return apology("amount must be a valid positive number", 400)
-
-    amount = int(amount)
-    if amount <= 0:
-        return apology("amount must be greater than zero", 400)
-
-    # Update the user's cash balance in the database
-    current_cash = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0]["cash"]
-    db.execute("UPDATE users SET cash = ? WHERE id = ?", current_cash + amount, session["user_id"])
-
-    # Redirect to the homepage or another page
-    return redirect("/")
-'''
+    if (len(user_like)) == 0:
+        quote_db.execute("INSERT INTO likes (user_id, quote_id, like_value) VALUES (?,?,?)", session["user_id"], quote_id, 1)
+        quote_db.execute("UPDATE quotes SET likes = likes + 1 WHERE id = ?", quote_id)
+    else:
+        quote_db.execute("INSERT INTO likes (user_id, quote_id, like_value) VALUES (?,?,?)", session["user_id"], quote_id, -1)
+        quote_db.execute("UPDATE quotes SET likes = likes - 1 WHERE id = ?", quote_id)
+    
+    return redirect(url_for("group_page", group_id=group_id))
 
 
 
